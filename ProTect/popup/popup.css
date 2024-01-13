@@ -1,0 +1,9 @@
+#colorButton {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Make the button round */
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
