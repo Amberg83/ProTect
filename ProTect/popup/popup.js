@@ -5,7 +5,7 @@ let activeState = "";
 
 (async () => {
     const response =
-        await chrome.runtime.sendMessage({getState: "state"}, function (response) {
+        await chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (response) {
         if (response.state === "False") {
             activeState = "False";
             button.textContent = "Plugin inactive";
@@ -22,7 +22,7 @@ let activeState = "";
 //--------------------------------------- functions ------------------------------------------
 function fSetActiveState (value) {
     (async () => {
-        const response = await chrome.runtime.sendMessage({setActiveState: value});
+        const response = await chrome.runtime.sendMessage({setActiveState: value, sender: "popup.js"});
         if (value === "True") {
             button.textContent = "Plugin active";
             button.style.backgroundColor = "green";

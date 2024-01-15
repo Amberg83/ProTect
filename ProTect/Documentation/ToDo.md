@@ -1,0 +1,3 @@
+- Log if active tab changed
+- Find basic advertisements and add them to the ads folder
+- Create one functioning injection of an advertisement

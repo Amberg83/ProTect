@@ -1,19 +1,38 @@
-chrome.tabs.onUpdated.addListener(handleUpdated);
+//--------------------------------------- Attributes ------------------------------------------
 let activeState = false;
 
+//--------------------------------------- Listeners ------------------------------------------
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (changeInfo.url) {
+        console.log("service_worker.js INFO: Tab " + tabId + ": URL changed to " + changeInfo.url);
+        if (activeState) {
+            randomizeBadge();
+        } else {
+            chrome.action.setBadgeText({text: null});
+        }
+    }
+});
+
+chrome.tabs.onActivated.addListener((activeInfo) => {
+    chrome.tabs.get(activeInfo.tabId, (tab) => {
+        console.log("service_worker.js INFO: Active Tab changed to: " + tab.id + " with URL: " + tab.url);
+        if (activeState) {
+            randomizeBadge();
+        } else {
+            chrome.action.setBadgeText({text: null});
+        }
+    });
+});
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
         if (request.getState === "state") {
             if (activeState === false) {
                 sendResponse({state: "False"});
             } else if (activeState === true) {
                 sendResponse({state: "True"});
             }
-            console.log("Responded to getState Request with: " + activeState);
+            console.log(request.sender + " INFO: Called getState. Response: " + activeState);
         } else if (request.setActiveState === "True") {
             activeState = true;
             chrome.action.setIcon({
@@ -23,7 +42,7 @@ chrome.runtime.onMessage.addListener(
                     '128': '../icons/color-128.png'
             }})
             sendResponse({state: "True"});
-            console.log("Set activeState to: " + activeState);
+            console.log(request.sender + " INFO: Set activeState to: " + activeState);
         } else if (request.setActiveState === "False") {
             activeState = false;
             chrome.action.setIcon({
@@ -34,7 +53,11 @@ chrome.runtime.onMessage.addListener(
                 }
             })
             sendResponse({state: "False"});
-            console.log("Set activeState to: " + activeState);
+            console.log(request.sender + " INFO: Set activeState to: " + activeState);
+        } else if (request.printToConsole === "1") {
+            console.log(request.sender + " DEBUG: " + request.item.toString());
+        } else {
+            console.log("service_worker.js WARN: Message parse failed")
         }
     }
 );
@@ -50,15 +73,4 @@ function randomizeBadge () {
         batchText = 1;
     }
     chrome.action.setBadgeText({text: batchText.toString()});
-}
-
-function handleUpdated(tabId, changeInfo, tabInfo) {
-    if (changeInfo.url) {
-        console.log(`Tab: ${tabId} URL changed to ${changeInfo.url}`);
-        if (activeState) {
-            randomizeBadge();
-        } else {
-            chrome.action.setBadgeText({text: null});
-        }
-    }
 }
