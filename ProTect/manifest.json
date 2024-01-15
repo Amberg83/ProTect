@@ -13,7 +13,7 @@
     "128": "icons/sw-128.png"
   },
   "action": {
-    "default_icon":{
+    "default_icon": {
       "16": "icons/sw-16.png",
       "48": "icons/sw-48.png",
       "128": "icons/sw-128.png"
@@ -34,7 +34,7 @@
     },
     {
       "matches": ["https://displate.com/*"],
-      "js": ["content/displateCS.js"]
+      "js": ["content/displate-ads.js"]
     },
     {
       "matches": ["https://www.thomann.de/*"],
