@@ -1,10 +1,14 @@
 //--------------------------------------- Attributes ------------------------------------------
 let activeState = false;
+//let tabs = [];
+//let currentTabID;
 
 //--------------------------------------- Listeners ------------------------------------------
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     if (changeInfo.url) {
+        //currentTabID = tabId;
         console.log("service_worker.js INFO: Tab " + tabId + ": URL changed to " + changeInfo.url);
+
         if (activeState) {
             randomizeBadge();
         } else {
@@ -15,7 +19,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.get(activeInfo.tabId, (tab) => {
+        //currentTabID = tab.id
         console.log("service_worker.js INFO: Active Tab changed to: " + tab.id + " with URL: " + tab.url);
+
         if (activeState) {
             randomizeBadge();
         } else {
@@ -70,7 +76,31 @@ function randomizeBadge () {
     let max = Math.floor(Math.random() * 20);
     let batchText = Math.floor(Math.random() * max);
     if (batchText === 0) {
-        batchText = 1;
+        batchText = "";
     }
     chrome.action.setBadgeText({text: batchText.toString()});
 }
+
+/*
+function doInCurrentTab(tabCallback) {
+    chrome.tabs.query(
+        { currentWindow: true, active: true },
+        function (tabArray) { tabCallback(tabArray[0]); }
+    );
+}
+
+function changeBadgeText (tabId) {
+    if (tabs === null || tabs.length < 1) {
+        doInCurrentTab( function(tab){ currentTabID = tab.id } );
+        let currentURL;
+        doInCurrentTab(function (tab) {currentURL = tab.url});
+        let entry = [tabId, currentURL];
+
+    }
+    for (let i = 0; i < tabs.length; i++) {
+
+
+    }
+
+}
+ */

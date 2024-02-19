@@ -1,6 +1,5 @@
-button = document.getElementById("colorButton");
-button.addEventListener("click", changeActiveState);
-
+let button = document.getElementById("toggleActiveState");
+button.addEventListener("change", changeActiveState);
 let activeState = "";
 
 (async () => {
@@ -8,12 +7,9 @@ let activeState = "";
         await chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (response) {
         if (response.state === "False") {
             activeState = "False";
-            button.textContent = "Plugin inactive";
-            button.style.backgroundColor = "red";
         } else if (response.state === "True") {
             activeState = "True";
-            button.textContent = "Plugin active";
-            button.style.backgroundColor = "green";
+            button.checked = true;
         }
         });
     console.log(response);
@@ -23,13 +19,6 @@ let activeState = "";
 function fSetActiveState (value) {
     (async () => {
         const response = await chrome.runtime.sendMessage({setActiveState: value, sender: "popup.js"});
-        if (value === "True") {
-            button.textContent = "Plugin active";
-            button.style.backgroundColor = "green";
-        } else if (value === "False") {
-            button.textContent = "Plugin inactive";
-            button.style.backgroundColor = "red";
-        }
         console.log(response);
     })();
 }
@@ -43,3 +32,4 @@ function changeActiveState () {
         activeState = "True";
     }
 }
+

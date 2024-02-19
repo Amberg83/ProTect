@@ -21,7 +21,6 @@
     "default_popup": "popup/popup.html"
   },
   "permissions": [
-    "storage",
     "tabs"
   ],
   "background": {
@@ -31,14 +30,6 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content/content.js"]
-    },
-    {
-      "matches": ["https://displate.com/*"],
-      "js": ["content/displate-ads.js"]
-    },
-    {
-      "matches": ["https://www.thomann.de/*"],
-      "js": ["content/thomann-ads.js"]
     }
   ]
 }
