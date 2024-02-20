@@ -1,5 +1,7 @@
 //--------------------------------------- Attributes ------------------------------------------
 let activeState = false;
+let currentStat = 0;
+let sessionStat = 0;
 //let tabs = [];
 //let currentTabID;
 
@@ -12,7 +14,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
         if (activeState) {
             randomizeBadge();
         } else {
-            chrome.action.setBadgeText({text: null});
+            chrome.action.setBadgeText({text: ""});
         }
     }
 });
@@ -25,7 +27,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         if (activeState) {
             randomizeBadge();
         } else {
-            chrome.action.setBadgeText({text: null});
+            chrome.action.setBadgeText({text: ""});
         }
     });
 });
@@ -34,9 +36,9 @@ chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.getState === "state") {
             if (activeState === false) {
-                sendResponse({state: "False"});
+                sendResponse({state: "False", currentStat: currentStat, sessionStat: sessionStat});
             } else if (activeState === true) {
-                sendResponse({state: "True"});
+                sendResponse({state: "True", currentStat: currentStat, sessionStat: sessionStat});
             }
             console.log(request.sender + " INFO: Called getState. Response: " + activeState);
         } else if (request.setActiveState === "True") {
@@ -75,10 +77,13 @@ chrome.runtime.onMessage.addListener(
 function randomizeBadge () {
     let max = Math.floor(Math.random() * 20);
     let batchText = Math.floor(Math.random() * max);
+    currentStat = batchText;
+    sessionStat = sessionStat + currentStat;
     if (batchText === 0) {
         batchText = "";
     }
     chrome.action.setBadgeText({text: batchText.toString()});
+
 }
 
 /*

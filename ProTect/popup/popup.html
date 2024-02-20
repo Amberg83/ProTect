@@ -7,13 +7,11 @@
     <link rel="stylesheet" type="text/css" href="popup.css" />
 </head>
 
+<body>
 <div class="title">
     <img id="title-pic" class="title" src="../icons/color-48.png">
     <h1 id="title-text" class="title"> ProTect </h1>
 </div>
-
-
-<body>
 
 <div class="power-switch">
 <input type="checkbox" id="toggleActiveState" />
@@ -39,9 +37,38 @@
     </symbol>
 </svg>
 
+<div class="stats">
+    <table class="table">
+        <tr>
+           <td colspan="2">
+               <b id="statHead">Blocked Privacy Breaches</b>
+           </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="currentlyBlocked">
+                    <p>Currently</p>
+                    <p id="currentlyBlockedValue">0</p>
+                </div>
+            </td>
+            <td>
+                <div class="sessionBlocked">
+                    <p>This Session</p>
+                    <p id="sessionBlockedValue">0</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<footer class="footer">
+    &copy; 2024 ProTect. All rights reserved.
+</footer>
+
 <script src="popup.js"></script>
 
 </body>
+
 </html>
 
 
