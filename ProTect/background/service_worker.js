@@ -83,29 +83,4 @@ function randomizeBadge () {
         batchText = "";
     }
     chrome.action.setBadgeText({text: batchText.toString()});
-
 }
-
-/*
-function doInCurrentTab(tabCallback) {
-    chrome.tabs.query(
-        { currentWindow: true, active: true },
-        function (tabArray) { tabCallback(tabArray[0]); }
-    );
-}
-
-function changeBadgeText (tabId) {
-    if (tabs === null || tabs.length < 1) {
-        doInCurrentTab( function(tab){ currentTabID = tab.id } );
-        let currentURL;
-        doInCurrentTab(function (tab) {currentURL = tab.url});
-        let entry = [tabId, currentURL];
-
-    }
-    for (let i = 0; i < tabs.length; i++) {
-
-
-    }
-
-}
- */

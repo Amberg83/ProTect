@@ -4,6 +4,8 @@ let activeState = "";
 let currentStat = document.getElementById("currentlyBlockedValue");
 let sessionStat = document.getElementById("sessionBlockedValue");
 
+
+//--------------------------------------- on popup open execute ------------------------------
 (async () => {
     const response =
         await chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (response) {

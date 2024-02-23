@@ -5,12 +5,12 @@
     src: url('../fonts/researcher.ttf') format('ttf');
 }
 
+/* -------------- Titel ----------------- */
 .title { float: left; padding-left: 8px}
 
 #title-pic {
     padding-top: 20px;
 }
-
 
 #title-text {
     color: #ffeae5;
@@ -18,12 +18,14 @@
     font-size: xx-large;
 }
 
+/* -------------- Größe und Farbe des PopUps ----------------- */
 body {
     background-color: #0a0d14;
     width: 250px;
     height: 400px;
 }
 
+/* -------------- On/Off Button ----------------- */
 #switch{
     top: 50%;
     left: 50%;
@@ -173,6 +175,7 @@ body {
     }
 }
 
+/* -------------- Footer ----------------- */
 .footer {
     font-family: Researcher, serif;
     font-size: smaller;
@@ -183,6 +186,7 @@ body {
     height: 2.5rem;
 }
 
+/* -------------- Stats ----------------- */
 .table {
     width:85%;
     float: left;
