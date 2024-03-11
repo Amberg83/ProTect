@@ -13,8 +13,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
         if (activeState) {
             randomizeBadge();
+            chrome.action.setIcon({
+                path: {
+                    '16': '../icons/color-16.png',
+                    '48': '../icons/color-48.png',
+                    '128': '../icons/color-128.png'
+                }})
         } else {
             chrome.action.setBadgeText({text: ""});
+            chrome.action.setIcon({
+                path: {
+                    '16': '../icons/sw-16.png',
+                    '48': '../icons/sw-48.png',
+                    '128': '../icons/sw-128.png'
+                }
+            })
         }
     }
 });
@@ -26,8 +39,21 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 
         if (activeState) {
             randomizeBadge();
+            chrome.action.setIcon({
+                path: {
+                    '16': '../icons/color-16.png',
+                    '48': '../icons/color-48.png',
+                    '128': '../icons/color-128.png'
+                }})
         } else {
             chrome.action.setBadgeText({text: ""});
+            chrome.action.setIcon({
+                path: {
+                    '16': '../icons/sw-16.png',
+                    '48': '../icons/sw-48.png',
+                    '128': '../icons/sw-128.png'
+                }
+            })
         }
     });
 });
@@ -82,5 +108,5 @@ function randomizeBadge () {
     if (batchText === 0) {
         batchText = "";
     }
-    chrome.action.setBadgeText({text: batchText.toString()});
+    //chrome.action.setBadgeText({text: batchText.toString()});
 }
