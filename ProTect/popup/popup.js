@@ -6,9 +6,7 @@ let sessionStat = document.getElementById("sessionBlockedValue");
 
 
 //--------------------------------------- on popup open execute ------------------------------
-(async () => {
-    const response =
-        await chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (response) {
+chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (response) {
         if (response.state === "False") {
             activeState = "False";
             currentStat.textContent = response.currentStat;
@@ -19,16 +17,12 @@ let sessionStat = document.getElementById("sessionBlockedValue");
             currentStat.textContent = response.currentStat;
             sessionStat.textContent = response.sessionStat;
         }
-        });
-    console.log(response);
-})();
+            console.log(response);
+        })
 
 //--------------------------------------- functions ------------------------------------------
 function fSetActiveState (value) {
-    (async () => {
-        const response = await chrome.runtime.sendMessage({setActiveState: value, sender: "popup.js"});
-        console.log(response);
-    })();
+    chrome.runtime.sendMessage({setActiveState: value, sender: "popup.js"});
 }
 
 function changeActiveState () {

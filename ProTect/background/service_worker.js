@@ -58,6 +58,8 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     });
 });
 
+
+
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.getState === "state") {
@@ -89,7 +91,7 @@ chrome.runtime.onMessage.addListener(
             sendResponse({state: "False"});
             console.log(request.sender + " INFO: Set activeState to: " + activeState);
         } else if (request.printToConsole === "1") {
-            console.log(request.sender + " DEBUG: " + request.item.toString());
+            console.log(request.sender + " INFO: " + request.text);
         } else {
             console.log("service_worker.js WARN: Message parse failed")
         }
