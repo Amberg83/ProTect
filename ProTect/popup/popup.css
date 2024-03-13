@@ -26,12 +26,7 @@ body {
 }
 
 /* -------------- On/Off Button ----------------- */
-#switch{
-    top: 50%;
-    left: 50%;
-    width: 75px;
-    height: 40px;
-}
+
 
 .power-switch {
     scale: 75%;
@@ -188,17 +183,16 @@ body {
 
 /* -------------- Stats ----------------- */
 .table {
-    width:85%;
-    float: left;
+    width:88%;
     font-family: Candara, serif;
     font-size: medium;
-    text-align: center;
+    text-align: left;
     color: #ffeae5;
     border: 1px solid #ffeae5;
     border-radius: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    line-height: 2px;
+    line-height: 20px;
 }
 
 .stats {
@@ -206,16 +200,12 @@ body {
     padding-top: 10px;
 }
 
-#currentlyBlockedValue {
-    color: #ff3000;
-    font-size: larger;
-}
-
-#sessionBlockedValue {
+.statValue {
+    text-align: right;
     color: #ff3000;
     font-size: larger;
 }
 
 #statHead {
-    line-height: normal;
+    line-height: 50%;
 }

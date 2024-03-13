@@ -2,6 +2,7 @@
 let activeState = false;
 let currentStat = 0;
 let sessionStat = 0;
+let allTimeStat = 0;
 //let tabs = [];
 //let currentTabID;
 
@@ -12,22 +13,15 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
         console.log("service_worker.js INFO: Tab " + tabId + ": URL changed to " + changeInfo.url);
 
         if (activeState) {
-            randomizeBadge();
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/color-16.png',
-                    '48': '../icons/color-48.png',
-                    '128': '../icons/color-128.png'
-                }})
+            if (changeInfo.url.includes("wanderlust.travel")){
+                randomizeBadge(1, 2);
+            } else {
+                randomizeBadge(0, 5);
+            }
+            setColorIcon();
         } else {
             chrome.action.setBadgeText({text: ""});
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/sw-16.png',
-                    '48': '../icons/sw-48.png',
-                    '128': '../icons/sw-128.png'
-                }
-            })
+            setSwIcon();
         }
     }
 });
@@ -38,22 +32,15 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         console.log("service_worker.js INFO: Active Tab changed to: " + tab.id + " with URL: " + tab.url);
 
         if (activeState) {
-            randomizeBadge();
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/color-16.png',
-                    '48': '../icons/color-48.png',
-                    '128': '../icons/color-128.png'
-                }})
+            if (tab.url.includes("wanderlust.travel")){
+                randomizeBadge(1, 2);
+            } else {
+                randomizeBadge(0, 5);
+            }
+            setColorIcon();
         } else {
             chrome.action.setBadgeText({text: ""});
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/sw-16.png',
-                    '48': '../icons/sw-48.png',
-                    '128': '../icons/sw-128.png'
-                }
-            })
+            setSwIcon();
         }
     });
 });
@@ -71,23 +58,12 @@ chrome.runtime.onMessage.addListener(
             console.log(request.sender + " INFO: Called getState. Response: " + activeState);
         } else if (request.setActiveState === "True") {
             activeState = true;
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/color-16.png',
-                    '48': '../icons/color-48.png',
-                    '128': '../icons/color-128.png'
-            }})
+            setColorIcon();
             sendResponse({state: "True"});
             console.log(request.sender + " INFO: Set activeState to: " + activeState);
         } else if (request.setActiveState === "False") {
             activeState = false;
-            chrome.action.setIcon({
-                path: {
-                    '16': '../icons/sw-16.png',
-                    '48': '../icons/sw-48.png',
-                    '128': '../icons/sw-128.png'
-                }
-            })
+            setSwIcon();
             sendResponse({state: "False"});
             console.log(request.sender + " INFO: Set activeState to: " + activeState);
         } else if (request.printToConsole === "1") {
@@ -100,15 +76,35 @@ chrome.runtime.onMessage.addListener(
 //--------------------------------------- initialisation ------------------------------------------
 
 
-
 //--------------------------------------- functions ------------------------------------------
-function randomizeBadge () {
-    let max = Math.floor(Math.random() * 20);
+function randomizeBadge (minNum, maxNum) {
+    let max = Math.floor(Math.random() * maxNum);
     let batchText = Math.floor(Math.random() * max);
     currentStat = batchText;
     sessionStat = sessionStat + currentStat;
-    if (batchText === 0) {
+    if (batchText === 0 === minNum) {
         batchText = "";
+    } else if (batchText < minNum) {
+        batchText = minNum;
     }
-    //chrome.action.setBadgeText({text: batchText.toString()});
+    chrome.action.setBadgeText({text: batchText.toString()});
+}
+
+function setColorIcon() {
+    chrome.action.setIcon({
+        path: {
+            '16': '../icons/color-16.png',
+            '48': '../icons/color-48.png',
+            '128': '../icons/color-128.png'
+        }})
+}
+
+function setSwIcon() {
+    chrome.action.setIcon({
+        path: {
+            '16': '../icons/sw-16.png',
+            '48': '../icons/sw-48.png',
+            '128': '../icons/sw-128.png'
+        }
+    })
 }
