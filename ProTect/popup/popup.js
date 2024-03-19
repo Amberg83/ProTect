@@ -21,16 +21,16 @@ chrome.runtime.sendMessage({getState: "state", sender: "popup.js"}, function (re
         })
 
 //--------------------------------------- functions ------------------------------------------
-function fSetActiveState (value) {
+function setActiveState (value) {
     chrome.runtime.sendMessage({setActiveState: value, sender: "popup.js"});
 }
 
 function changeActiveState () {
     if (activeState === "True") {
-        fSetActiveState("False");
+        setActiveState("False");
         activeState = "False";
     } else if (activeState === "False") {
-        fSetActiveState("True");
+        setActiveState("True");
         activeState = "True";
     }
 }

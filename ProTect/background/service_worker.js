@@ -2,72 +2,105 @@
 let activeState = false;
 let currentStat = 0;
 let sessionStat = 0;
-let allTimeStat = 0;
-//let tabs = [];
-//let currentTabID;
+let theWholeEntry;
+let nKlicks = 0;
 
 //--------------------------------------- Listeners ------------------------------------------
+/**
+ * Logs whenever the current Tab is updated and changes stats accordingly
+ */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     if (changeInfo.url) {
         //currentTabID = tabId;
-        console.log("service_worker.js INFO: Tab " + tabId + ": URL changed to " + changeInfo.url);
-
+        let message = "service_worker.js INFO: Tab " + tabId + ": URL changed to " + changeInfo.url;
+        console.log(message);
+        saveInformation(message);
         if (activeState) {
             if (changeInfo.url.includes("wanderlust.travel")){
-                randomizeBadge(1, 2);
+                randomizeCurrentStat(1, 2);
             } else {
-                randomizeBadge(0, 5);
+                randomizeCurrentStat(0, 5);
             }
             setColorIcon();
+            nKlicks++;
         } else {
             chrome.action.setBadgeText({text: ""});
             setSwIcon();
+            nKlicks++;
         }
     }
 });
 
+/**
+ * Logs whenever the active Tab changes and updates stats accordingly
+ */
 chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.get(activeInfo.tabId, (tab) => {
-        //currentTabID = tab.id
-        console.log("service_worker.js INFO: Active Tab changed to: " + tab.id + " with URL: " + tab.url);
-
+        let message = "service_worker.js INFO: Active Tab changed to: " + tab.id + " with URL: " + tab.url;
+        console.log(message);
+        saveInformation(message);
         if (activeState) {
             if (tab.url.includes("wanderlust.travel")){
-                randomizeBadge(1, 2);
+                randomizeCurrentStat(1, 2);
             } else {
-                randomizeBadge(0, 5);
+                randomizeCurrentStat(0, 5);
             }
             setColorIcon();
+            nKlicks++;
         } else {
             chrome.action.setBadgeText({text: ""});
             setSwIcon();
+            nKlicks++;
         }
     });
 });
 
 
-
+/**
+ * Reads messages from PopUp and Content Scripts and performs requested actions.
+ */
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+
         if (request.getState === "state") {
+            // when getState is requested, send the current Activation State to the sender
             if (activeState === false) {
                 sendResponse({state: "False", currentStat: currentStat, sessionStat: sessionStat});
             } else if (activeState === true) {
                 sendResponse({state: "True", currentStat: currentStat, sessionStat: sessionStat});
             }
-            console.log(request.sender + " INFO: Called getState. Response: " + activeState);
+            let message = request.sender + " INFO: Called getState. Response: " + activeState;
+            console.log(message);
+            saveInformation(message);
+
         } else if (request.setActiveState === "True") {
+            //change to colorful icon and set State to Active
             activeState = true;
             setColorIcon();
             sendResponse({state: "True"});
-            console.log(request.sender + " INFO: Set activeState to: " + activeState);
+            let message = request.sender + " INFO: Set activeState to: " + activeState;
+            console.log(message);
+            saveInformation(message);
+            nKlicks++;
+
         } else if (request.setActiveState === "False") {
+            //change to grayscale icon and set state to inactive
             activeState = false;
             setSwIcon();
             sendResponse({state: "False"});
-            console.log(request.sender + " INFO: Set activeState to: " + activeState);
+            let message = request.sender + " INFO: Set activeState to: " + activeState;
+            console.log(message);
+            saveInformation(message);
+            nKlicks++;
+
         } else if (request.printToConsole === "1") {
-            console.log(request.sender + " INFO: " + request.text);
+            //just logs information send with this parameter
+            let message = request.sender + " INFO: " + request.text;
+            console.log(message);
+            saveInformation(message);
+            nKlicks++;
+            console.log("service_worker.js INFO: Total Klicks recorded: " + nKlicks);
+
         } else {
             console.log("service_worker.js WARN: Message parse failed")
         }
@@ -76,17 +109,25 @@ chrome.runtime.onMessage.addListener(
 //--------------------------------------- initialisation ------------------------------------------
 
 
+
+
 //--------------------------------------- functions ------------------------------------------
-function randomizeBadge (minNum, maxNum) {
-    let max = Math.floor(Math.random() * maxNum);
-    let batchText = Math.floor(Math.random() * max);
-    currentStat = batchText;
-    sessionStat = sessionStat + currentStat;
-    if (batchText === 0 === minNum) {
-        batchText = "";
-    } else if (batchText < minNum) {
+/**
+ * Calculates the Stats shown in the PopUp and on the Badge
+ */
+function randomizeCurrentStat (minNum, maxNum) {
+    let batchText;
+
+    currentStat = Math.floor(Math.random() * maxNum);
+    batchText = currentStat;
+    if (currentStat < minNum) {
+        currentStat = minNum;
         batchText = minNum;
+    } else if (currentStat === 0) {
+        batchText = "";
     }
+    sessionStat = sessionStat + currentStat;
+
     chrome.action.setBadgeText({text: batchText.toString()});
 }
 
@@ -107,4 +148,37 @@ function setSwIcon() {
             '128': '../icons/sw-128.png'
         }
     })
+}
+
+/**
+ * Saves Logdata to a file on the persons computer
+ * Does not work
+ */
+function saveInformation(message) {
+    chrome.storage.local.get(["logData"], function(result) {
+        var secondsSinceLastEntry;
+        var date = new Date();
+        var newEntry = {
+            "time": date,
+            "info": message
+        }
+        if (Object.keys(result).length === 0) {
+            theWholeEntry = [];
+            secondsSinceLastEntry = 4;
+        } else {
+            theWholeEntry = result["logData"];
+            var lastEntry = theWholeEntry[theWholeEntry.length - 1];
+            var timeOld = new Date(lastEntry.time);
+            var timeNew = new Date(date);
+            secondsSinceLastEntry = (timeNew - timeOld) / 1000;
+        }
+        if (secondsSinceLastEntry > 3) {
+            theWholeEntry.push(newEntry)
+        }
+
+        chrome.storage.local.set({
+            "logData": theWholeEntry
+        });
+
+    });
 }
